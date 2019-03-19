@@ -1,0 +1,47 @@
+{
+    "name": "popphp/popcorn",
+    "description": "Popcorn, A REST-Based PHP Micro Framework",
+    "keywords": [
+        "rest framework",
+        "php micro framework",
+        "popcorn"
+    ],
+    "homepage": "http://popcorn.popphp.org/",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Nick Sagona",
+            "email": "dev@nolainteractive.com",
+            "homepage": "http://www.nolainteractive.com/"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0",
+        "popphp/popphp": "^3.3.0",
+        "popphp/pop-http": "^3.2.0",
+        "popphp/pop-session": "^3.1.4",
+        "popphp/pop-view": "^3.1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0.0"
+    },
+    "suggest": {
+        "popphp/pop-db": "For DB management and transactions",
+        "popphp/pop-form": "For HTML form generation and validation"
+    },
+    "autoload": {
+        "psr-4": {
+            "Popcorn\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Popcorn\\Test\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.2.x-dev"
+        }
+    }
+}

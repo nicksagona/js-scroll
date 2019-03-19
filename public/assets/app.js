@@ -17520,23 +17520,13 @@ module.exports = g;
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-/* WEBPACK VAR INJECTION */(function($) {/**
+/**
  * base.js
  */
 
-$(document).ready(function(){
-    if ($('div.side-pane')[0] != undefined) {
-        $('div.side-pane > a').click(function(){
-            $('div.side-pane > a > img').attr('class', 'img-off');
-            $(this).find('img').attr('class', 'img-on');
-            $('#current-image').attr('src', '/image?src=' + $(this).data('src'));
-            return false;
-        });
-    }
-});
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
 
 /***/ }),
 /* 7 */

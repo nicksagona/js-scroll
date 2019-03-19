@@ -1,0 +1,46 @@
+{
+    "name": "popphp/pop-http",
+    "description": "Pop Http Component for Pop PHP Framework",
+    "keywords": [
+        "http",
+        "http client",
+        "http request",
+        "http response",
+        "curl",
+        "streams",
+        "file uploads",
+        "php",
+        "pop",
+        "pop php"
+    ],
+    "homepage": "http://www.popphp.org/",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Nick Sagona",
+            "email": "dev@nolainteractive.com",
+            "homepage": "http://www.nolainteractive.com/"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pop\\Http\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Pop\\Http\\Test\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.2.x-dev"
+        }
+    }
+}

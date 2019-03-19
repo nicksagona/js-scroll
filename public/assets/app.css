@@ -9758,67 +9758,6 @@ h1, h2, h3, h4, h5, h6, div, p {
   color: #808080;
   font-family: 'Source Sans Pro', arial, helvetica, verdana, sans-serif; }
 
-form > fieldset > dl > dd {
-  margin-right: 10px;
-  display: block;
-  width: 33%; }
-
-form > fieldset > dl > dd {
-  float: left; }
-
-nav.main-nav {
-  margin: 0 auto 10px auto;
-  padding: 5px;
-  display: block;
-  width: 200px; }
-
-nav.main-nav > a {
-  padding: 10px;
-  display: block; }
-
-.form-control-file {
-  padding: 3px;
-  border: solid 1px #ccc;
-  border-radius: 3px;
-  font-size: 0.9em;
-  float: left; }
-
 .error {
   color: #f00;
   font-weight: bold; }
-
-.side-pane {
-  margin: 0;
-  padding: 10px;
-  float: right;
-  width: 150px;
-  background-color: #eee; }
-
-.side-pane > a {
-  margin: 0;
-  padding: 0; }
-
-.side-pane img {
-  margin: 0 auto;
-  padding: 5px;
-  display: block;
-  border: solid 1px #aaa;
-  background-color: #ccc; }
-
-.side-pane img:hover {
-  border: solid 1px #005ea7;
-  background-color: #6fcef1; }
-
-.side-pane img.img-on {
-  border: solid 1px #005ea7;
-  background-color: #6fcef1; }
-
-.side-pane p {
-  text-align: center; }
-
-#current-image {
-  margin: 0 auto;
-  padding: 5px;
-  display: block;
-  border: solid 1px #aaa;
-  background-color: #eee; }
