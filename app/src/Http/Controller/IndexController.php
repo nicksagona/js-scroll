@@ -36,6 +36,18 @@ class IndexController extends AbstractController
     }
 
     /**
+     * Users count action
+     *
+     * @return void
+     */
+    public function usersCount()
+    {
+        $user   = new Model\User();
+        $filter = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
+        $this->send(200, ['user_count' => $user->getCount($filter)], 'OK', $this->application->config['http_options_headers']);
+    }
+
+    /**
      * Error action
      *
      * @return void

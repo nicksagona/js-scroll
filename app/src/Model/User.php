@@ -9,15 +9,6 @@ use Scroll\Table;
 class User extends AbstractModel
 {
 
-    /**
-     * Get all users
-     *
-     * @param  int    $page
-     * @param  int    $limit
-     * @param  string $sort
-     * @param  mixed  $filter
-     * @return array
-     */
     public function getAll($page = null, $limit = null, $sort = null, $filter = null)
     {
         if ((null !== $limit) && (null !== $page)) {
@@ -41,19 +32,39 @@ class User extends AbstractModel
             $orderBy = null;
         }
 
+        $select = ['id', 'username', 'first_name', 'last_name', 'email'];
+
         if (!empty($filter)) {
             $columns = Predicate::convertToArray($filter);
             return Table\Users::findBy($columns, [
+                'select' => $select,
                 'offset' => $page,
                 'limit'  => $limit,
                 'order'  => $orderBy,
             ])->toArray();
         } else {
             return Table\Users::findAll([
+                'select' => $select,
                 'offset' => $page,
                 'limit'  => $limit,
                 'order'  => $orderBy
             ])->toArray();
+        }
+    }
+
+    /**
+     * Get count of log entries
+     *
+     * @param  mixed $filter
+     * @return int
+     */
+    public function getCount($filter = null)
+    {
+        if (!empty($filter)) {
+            $columns = Predicate::convertToArray($filter);
+            return Table\Users::getTotal($columns);
+        } else {
+            return Table\Users::getTotal();
         }
     }
 

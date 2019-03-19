@@ -137,12 +137,16 @@ abstract class AbstractController extends \Pop\Controller\AbstractController
             $this->response->setMessage($message);
         }
 
+        if (null !== $headers) {
+            $this->response->setHeaders($headers);
+        }
+
         $responseBody = (!empty($body) && ($this->response->getHeader('Content-Type') == 'application/json')) ?
             json_encode($body, JSON_PRETTY_PRINT) : $body;
 
         $this->response->setCode($code);
         $this->response->setBody($responseBody . PHP_EOL . PHP_EOL);
-        $this->response->send(null, $headers);
+        $this->response->send();
     }
 
     /**
