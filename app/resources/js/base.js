@@ -10,18 +10,19 @@ var jsScroll = {
     },
 
     fetchNextPage : function(){
-        var page   = $('#users').attr('data-page');
-        var limit  = $('#users').attr('data-limit');
-        var sort   = $('#users').attr('data-sort');
-        var filter = $('#users').attr('data-filter');
+        var url    = $('#results').attr('data-url');
+        var page   = $('#results').attr('data-page');
+        var limit  = $('#results').attr('data-limit');
+        var sort   = $('#results').attr('data-sort');
+        var filter = $('#results').attr('data-filter');
 
         jsScroll.bottom = false;
 
         page = parseInt(page) + 1;
 
-        $('#users').attr('data-page', page);
+        $('#results').attr('data-page', page);
 
-        var url = '/users?page=' + page + '&limit=' + limit;
+        url = url + '?page=' + page + '&limit=' + limit;
 
         if ((sort != null) && (sort != undefined) && (sort != '')) {
             url = url + '&sort=' + sort;
@@ -31,66 +32,53 @@ var jsScroll = {
         }
 
         $.getJSON(url, function (data) {
-            if ((data.users != undefined) && (data.users.length > 0)) {
+            if ((data.results != undefined) && (data.results.length > 0)) {
                 var nextRows = '';
-                var start    = $('#users > tbody > tr').length + 1;
-                for (var i = 0; i < data.users.length; i++) {
-                    nextRows = nextRows + '<tr><td>' + (start + i) + '</td><td>' + data.users[i].id + '</td><td>' +
-                        ((!jsScroll.isEmpty(data.users[i].username)) ? data.users[i].username : '') + '</td><td>' +
-                        ((!jsScroll.isEmpty(data.users[i].first_name)) ? data.users[i].first_name : '') + '</td><td>' +
-                        ((!jsScroll.isEmpty(data.users[i].last_name)) ? data.users[i].last_name : '') + '</td><td>' +
-                        ((!jsScroll.isEmpty(data.users[i].email)) ? data.users[i].email : '') + '</td></tr>';
+                var start    = $('#results > tbody > tr').length + 1;
+                for (var i = 0; i < data.results.length; i++) {
+                    nextRows = nextRows + '<tr><td>' + (start + i) + '</td><td>' + data.results[i].id + '</td><td>' +
+                        ((!jsScroll.isEmpty(data.results[i].username)) ? data.results[i].username : '') + '</td><td>' +
+                        ((!jsScroll.isEmpty(data.results[i].first_name)) ? data.results[i].first_name : '') + '</td><td>' +
+                        ((!jsScroll.isEmpty(data.results[i].last_name)) ? data.results[i].last_name : '') + '</td><td>' +
+                        ((!jsScroll.isEmpty(data.results[i].email)) ? data.results[i].email : '') + '</td></tr>';
                 }
 
-                $('#users > tbody').append(nextRows);
+                $('#results > tbody').append(nextRows);
                 $('#loading').css('background-image', 'none');
             }
         });
-    }
-};
+    },
 
-$(document).ready(function(){
-    // On window scroll
-    $(window).scroll(function() {
-        if (($(window).height() + $(window).scrollTop()) == $(document).height()) {
-            if (parseInt($('#user-count')[0].innerHTML) > $('#users > tbody > tr').length) {
-                $('#loading').css('background-image', 'url(/assets/img/loading.gif)');
-                jsScroll.fetchNextPage();
-            }
-            jsScroll.bottom = true;
-        } else {
-            jsScroll.bottom = false;
-        }
-    });
+    fetchSearch : function() {
+        if (($('#search_for').val() != '') && ($('#search_for').val() != undefined) && ($('#search_for').val() != null)) {
+            var url      = $('#results').attr('data-url');
+            var urlCount = $('#results').attr('data-url-count');
 
-    // On search text field key up
-    $('#username').keyup(function(){
-        if (($('#username').val() != '') && ($('#username').val() != undefined) && ($('#username').val() != null)) {
-            $.getJSON('/users/count?filter[]=' + $('#search_by').val() + '%20LIKE%20' + $('#username').val() + '%25', function (data) {
-                if (data.user_count != undefined) {
-                    $('#user-count')[0].innerHTML = data.user_count;
+            $.getJSON(urlCount + '?filter[]=' + $('#search_by').val() + '%20LIKE%20' + $('#search_for').val() + '%25', function (data) {
+                if (data.result_count != undefined) {
+                    $('#result-count')[0].innerHTML = data.result_count;
                 }
             });
 
-            $.getJSON('/users?limit=' + $('#users').attr('data-limit') + '&filter[]=' + $('#search_by').val() + '%20LIKE%20' + $('#username').val() + '%25', function (data) {
-                if ((data.users != undefined) && (data.users.length > 0)) {
-                    $('#users > tbody').remove();
+            $.getJSON(url + '?limit=' + $('#results').attr('data-limit') + '&filter[]=' + $('#search_by').val() + '%20LIKE%20' + $('#search_for').val() + '%25', function (data) {
+                if ((data.results != undefined) && (data.results.length > 0)) {
+                    $('#results > tbody').remove();
                     var tbody = '<tbody>';
                     var start = 1;
-                    for (var i = 0; i < data.users.length; i++) {
-                        tbody = tbody + '<tr><td>' + (start + i) + '</td><td>' + data.users[i].id + '</td><td>' +
-                            ((!jsScroll.isEmpty(data.users[i].username)) ? data.users[i].username : '') + '</td><td>' +
-                            ((!jsScroll.isEmpty(data.users[i].first_name)) ? data.users[i].first_name : '') + '</td><td>' +
-                            ((!jsScroll.isEmpty(data.users[i].last_name)) ? data.users[i].last_name : '') + '</td><td>' +
-                            ((!jsScroll.isEmpty(data.users[i].email)) ? data.users[i].email : '') + '</td></tr>';
+                    for (var i = 0; i < data.results.length; i++) {
+                        tbody = tbody + '<tr><td>' + (start + i) + '</td><td>' + data.results[i].id + '</td><td>' +
+                            ((!jsScroll.isEmpty(data.results[i].username)) ? data.results[i].username : '') + '</td><td>' +
+                            ((!jsScroll.isEmpty(data.results[i].first_name)) ? data.results[i].first_name : '') + '</td><td>' +
+                            ((!jsScroll.isEmpty(data.results[i].last_name)) ? data.results[i].last_name : '') + '</td><td>' +
+                            ((!jsScroll.isEmpty(data.results[i].email)) ? data.results[i].email : '') + '</td></tr>';
                     }
                     tbody = tbody + '</tbody>';
 
 
-                    $('#users').append(tbody);
+                    $('#results').append(tbody);
 
-                    var thLinks = $('#users > thead > tr > th > a');
-                    var filter  = $('#search_by').val() + '%20LIKE%20' + $('#username').val() + '%25';
+                    var thLinks = $('#results > thead > tr > th > a');
+                    var filter  = $('#search_by').val() + '%20LIKE%20' + $('#search_for').val() + '%25';
 
                     for (var j = 0; j < thLinks.length; j++) {
                         var href = $(thLinks[j]).attr('href')
@@ -101,10 +89,29 @@ $(document).ready(function(){
                         $(thLinks[j]).attr('href', href);
                     }
 
-                    $('#users').attr('data-filter', filter);
-                    $('#users').attr('data-page', 1);
+                    $('#results').attr('data-filter', filter);
+                    $('#results').attr('data-page', 1);
                 }
             });
         }
+    }
+};
+
+$(document).ready(function(){
+    // On window scroll
+    $(window).scroll(function() {
+        if (($(window).height() + $(window).scrollTop()) == $(document).height()) {
+            if (parseInt($('#result-count')[0].innerHTML) > $('#results > tbody > tr').length) {
+                $('#loading').css('background-image', 'url(/assets/img/loading.gif)');
+                jsScroll.fetchNextPage();
+            }
+            jsScroll.bottom = true;
+        } else {
+            jsScroll.bottom = false;
+        }
     });
+
+    // On search text field key up
+    $('#search_for').keyup(jsScroll.fetchSearch);
+    $('#search_by').change(jsScroll.fetchSearch);
 });
