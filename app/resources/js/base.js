@@ -2,62 +2,68 @@
  * base.js
  */
 
-var bottom = false;
+var jsScroll = {
+    bottom : false,
 
-var isEmpty = function(value) {
-    return ((value == undefined) || (value == null) || (value == '') || (value == 'undefined') || (value == 'null'));
-};
+    isEmpty : function(value) {
+        return ((value == undefined) || (value == null) || (value == '') || (value == 'undefined') || (value == 'null'));
+    },
 
-var fetchNextPage = function(){
-    var page   = $('#users').attr('data-page');
-    var limit  = $('#users').attr('data-limit');
-    var sort   = $('#users').attr('data-sort');
-    var filter = $('#users').attr('data-filter');
-    bottom     = false;
+    fetchNextPage : function(){
+        var page   = $('#users').attr('data-page');
+        var limit  = $('#users').attr('data-limit');
+        var sort   = $('#users').attr('data-sort');
+        var filter = $('#users').attr('data-filter');
 
-    page = parseInt(page) + 1;
+        jsScroll.bottom = false;
 
-    $('#users').attr('data-page', page);
+        page = parseInt(page) + 1;
 
-    var url = '/users?page=' + page + '&limit=' + limit;
+        $('#users').attr('data-page', page);
 
-    if ((sort != null) && (sort != undefined) && (sort != '')) {
-        url = url + '&sort=' + sort;
-    }
-    if ((filter != null) && (filter != undefined) && (filter != '')) {
-        url = url + '&filter[]=' + filter;
-    }
+        var url = '/users?page=' + page + '&limit=' + limit;
 
-    $.getJSON(url, function (data) {
-        if ((data.users != undefined) && (data.users.length > 0)) {
-            var nextRows = '';
-            var start    = $('#users > tbody > tr').length + 1;
-            for (var i = 0; i < data.users.length; i++) {
-                nextRows = nextRows + '<tr><td>' + (start + i) + '</td><td>' + data.users[i].id + '</td><td>' +
-                    ((!isEmpty(data.users[i].username)) ? data.users[i].username : '') + '</td><td>' +
-                    ((!isEmpty(data.users[i].first_name)) ? data.users[i].first_name : '') + '</td><td>' +
-                    ((!isEmpty(data.users[i].last_name)) ? data.users[i].last_name : '') + '</td><td>' +
-                    ((!isEmpty(data.users[i].email)) ? data.users[i].email : '') + '</td></tr>';
-            }
-
-            $('#users > tbody').append(nextRows);
-            $('#loading').css('background-image', 'none');
+        if ((sort != null) && (sort != undefined) && (sort != '')) {
+            url = url + '&sort=' + sort;
         }
-    });
+        if ((filter != null) && (filter != undefined) && (filter != '')) {
+            url = url + '&filter[]=' + filter;
+        }
+
+        $.getJSON(url, function (data) {
+            if ((data.users != undefined) && (data.users.length > 0)) {
+                var nextRows = '';
+                var start    = $('#users > tbody > tr').length + 1;
+                for (var i = 0; i < data.users.length; i++) {
+                    nextRows = nextRows + '<tr><td>' + (start + i) + '</td><td>' + data.users[i].id + '</td><td>' +
+                        ((!jsScroll.isEmpty(data.users[i].username)) ? data.users[i].username : '') + '</td><td>' +
+                        ((!jsScroll.isEmpty(data.users[i].first_name)) ? data.users[i].first_name : '') + '</td><td>' +
+                        ((!jsScroll.isEmpty(data.users[i].last_name)) ? data.users[i].last_name : '') + '</td><td>' +
+                        ((!jsScroll.isEmpty(data.users[i].email)) ? data.users[i].email : '') + '</td></tr>';
+                }
+
+                $('#users > tbody').append(nextRows);
+                $('#loading').css('background-image', 'none');
+            }
+        });
+    }
 };
 
 $(document).ready(function(){
+    // On window scroll
     $(window).scroll(function() {
         if (($(window).height() + $(window).scrollTop()) == $(document).height()) {
             if (parseInt($('#user-count')[0].innerHTML) > $('#users > tbody > tr').length) {
                 $('#loading').css('background-image', 'url(/assets/img/loading.gif)');
-                fetchNextPage();
+                jsScroll.fetchNextPage();
             }
-            bottom = true;
+            jsScroll.bottom = true;
         } else {
-            bottom = false;
+            jsScroll.bottom = false;
         }
     });
+
+    // On search text field key up
     $('#username').keyup(function(){
         if (($('#username').val() != '') && ($('#username').val() != undefined) && ($('#username').val() != null)) {
             $.getJSON('/users/count?filter[]=' + $('#search_by').val() + '%20LIKE%20' + $('#username').val() + '%25', function (data) {
@@ -73,10 +79,10 @@ $(document).ready(function(){
                     var start = 1;
                     for (var i = 0; i < data.users.length; i++) {
                         tbody = tbody + '<tr><td>' + (start + i) + '</td><td>' + data.users[i].id + '</td><td>' +
-                            ((!isEmpty(data.users[i].username)) ? data.users[i].username : '') + '</td><td>' +
-                            ((!isEmpty(data.users[i].first_name)) ? data.users[i].first_name : '') + '</td><td>' +
-                            ((!isEmpty(data.users[i].last_name)) ? data.users[i].last_name : '') + '</td><td>' +
-                            ((!isEmpty(data.users[i].email)) ? data.users[i].email : '') + '</td></tr>';
+                            ((!jsScroll.isEmpty(data.users[i].username)) ? data.users[i].username : '') + '</td><td>' +
+                            ((!jsScroll.isEmpty(data.users[i].first_name)) ? data.users[i].first_name : '') + '</td><td>' +
+                            ((!jsScroll.isEmpty(data.users[i].last_name)) ? data.users[i].last_name : '') + '</td><td>' +
+                            ((!jsScroll.isEmpty(data.users[i].email)) ? data.users[i].email : '') + '</td></tr>';
                     }
                     tbody = tbody + '</tbody>';
 
