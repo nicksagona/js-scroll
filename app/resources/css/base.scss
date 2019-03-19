@@ -35,3 +35,16 @@ table th {
   display: inline;
   width: auto;
 }
+
+#username, #search_by {
+  margin-right: 5px;
+}
+
+#loading {
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  height: 50px;
+  background-position: center;
+  background-repeat: no-repeat;
+}

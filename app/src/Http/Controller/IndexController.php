@@ -25,7 +25,10 @@ class IndexController extends AbstractController
 
         $this->view->userCount  = $userModel->getCount($filter);
         $this->view->users      = $userModel->getAll($page, $limit, $sort, $filter);
-        $this->view->pagination = $this->application->config['pagination'];
+        $this->view->page       = (null !== $page) ? (int)$page : 1;
+        $this->view->sort       = $sort;
+        $this->view->filter     = (is_array($filter) && isset($filter[0])) ? $filter[0] : null;
+        $this->view->limit      = $limit;
         $this->view->searched   = null;
         $this->view->searchedBy = null;
 
@@ -46,7 +49,7 @@ class IndexController extends AbstractController
     public function users()
     {
         $page    = (null !== $this->request->getQuery('page')) ? (int)$this->request->getQuery('page') : null;
-        $limit   = (null !== $this->request->getQuery('limit'))  ? (int)$this->request->getQuery('limit') : null;
+        $limit   = (null !== $this->request->getQuery('limit'))  ? (int)$this->request->getQuery('limit') : $this->application->config['pagination'];
         $sort    = (null !== $this->request->getQuery('sort'))  ? $this->request->getQuery('sort') : null;
         $filter  = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
         $users   = (new Model\User())->getAll($page, $limit, $sort, $filter);
