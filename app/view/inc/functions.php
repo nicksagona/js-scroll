@@ -33,3 +33,8 @@ function getQuery($omit = null, $amp = true) {
 
     return $queryString;
 }
+
+function convertCase($string) {
+    $value = ucwords(str_replace('_', ' ', $string));
+    return ($value == 'Id') ? strtoupper($value) : $value;
+}

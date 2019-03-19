@@ -9,6 +9,8 @@ use Scroll\Table;
 class User extends AbstractModel
 {
 
+    protected $searchFields = ['id', 'username', 'first_name', 'last_name', 'email'];
+
     public function getAll($page = null, $limit = null, $sort = null, $filter = null)
     {
         if ((null !== $limit) && (null !== $page)) {
@@ -32,18 +34,16 @@ class User extends AbstractModel
             $orderBy = null;
         }
 
-        $select = ['id', 'username', 'first_name', 'last_name', 'email'];
-
         if (!empty($filter)) {
             return Table\Users::findBy($this->getFilter($filter), [
-                'select' => $select,
+                'select' => $this->searchFields,
                 'offset' => $page,
                 'limit'  => $limit,
                 'order'  => $orderBy,
             ])->toArray();
         } else {
             return Table\Users::findAll([
-                'select' => $select,
+                'select' => $this->searchFields,
                 'offset' => $page,
                 'limit'  => $limit,
                 'order'  => $orderBy
@@ -51,12 +51,6 @@ class User extends AbstractModel
         }
     }
 
-    /**
-     * Get count of log entries
-     *
-     * @param  mixed $filter
-     * @return int
-     */
     public function getCount($filter = null)
     {
         if (!empty($filter)) {
@@ -66,12 +60,11 @@ class User extends AbstractModel
         }
     }
 
-    /**
-     * Get filter
-     *
-     * @param  mixed $filter
-     * @return array
-     */
+    public function getSearchFields()
+    {
+        return $this->searchFields;
+    }
+
     public function getFilter($filter)
     {
         return Predicate::convertToArray($filter);

@@ -2,10 +2,11 @@
 <?php include 'inc/header.phtml'; ?>
     <a class="btn btn-sm btn-outline-danger pull-right" href="/">Reset</a>
     <select class="form-control form-control-inline form-control-sm pull-right" name="search_by" id="search_by">
-        <option value="username"<?=($searchedBy == 'username') ? ' selected="selected"' : null; ?>>Username</option>
-        <option value="first_name"<?=($searchedBy == 'first_name') ? ' selected="selected"' : null; ?>>First Name</option>
-        <option value="last_name"<?=($searchedBy == 'last_name') ? ' selected="selected"' : null; ?>>Last Name</option>
-        <option value="email"<?=($searchedBy == 'email') ? ' selected="selected"' : null; ?>>Email</option>
+<?php foreach ($searchFields as $searchField): ?>
+<?php if ($searchField != 'id'): ?>
+        <option value="<?=$searchField; ?>"<?=($searchedBy == $searchField) ? ' selected="selected"' : null; ?>><?=convertCase($searchField); ?></option>
+<?php endif; ?>
+<?php endforeach; ?>
     </select>
     <input class="form-control form-control-inline form-control-sm pull-right" id="search_for" name="search_for" type="text" value="<?=$searched; ?>" placeholder="Search..." size="20" />
     <h1><?=$title;?> (<span id="result-count"><?=$resultCount; ?></span>)</h1>
@@ -13,27 +14,23 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th><a href="/?limit=<?=$limit; ?>&sort=<?=getSort('id') . getQuery(['sort', 'limit']); ?>">ID</a></th>
-                <th><a href="/?limit=<?=$limit; ?>&sort=<?=getSort('username') . getQuery(['sort', 'limit']); ?>">Username</a></th>
-                <th><a href="/?limit=<?=$limit; ?>&sort=<?=getSort('first_name') . getQuery(['sort', 'limit']); ?>">First Name</a></th>
-                <th><a href="/?limit=<?=$limit; ?>&sort=<?=getSort('last_name') . getQuery(['sort', 'limit']); ?>">Last Name</a></th>
-                <th><a href="/?limit=<?=$limit; ?>&sort=<?=getSort('email') . getQuery(['sort', 'limit']); ?>">Email</a></th>
+<?php foreach ($searchFields as $searchField): ?>
+                <th><a href="/?limit=<?=$limit; ?>&sort=<?=getSort($searchField) . getQuery(['sort', 'limit']); ?>"><?=convertCase($searchField); ?></a></th>
+<?php endforeach; ?>
             </tr>
         </thead>
         <tbody>
 <?php if (count($results) == 0): ?>
             <tr>
-                <td colspan="5"><p>There are currently no result.</p></td>
+                <td colspan="<?=(count($searchFields) + 1); ?>"><p class="no-results">There are currently no results.</p></td>
             </tr>
 <?php else: ?>
 <?php foreach ($results as $i => $result): ?>
             <tr>
                 <td><?=($i + 1); ?></td>
-                <td><?=$result['id']; ?></td>
-                <td><?=$result['username']; ?></td>
-                <td><?=$result['first_name']; ?></td>
-                <td><?=$result['last_name']; ?></td>
-                <td><?=$result['email']; ?></td>
+<?php foreach ($searchFields as $searchField): ?>
+                <td><?=$result[$searchField]; ?></td>
+<?php endforeach; ?>
             </tr>
 <?php endforeach; ?>
 <?php endif; ?>

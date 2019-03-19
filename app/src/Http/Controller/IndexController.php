@@ -23,14 +23,15 @@ class IndexController extends AbstractController
         $filter    = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
         $userModel = new Model\User();
 
-        $this->view->resultCount = $userModel->getCount($filter);
-        $this->view->results     = $userModel->getAll($page, $limit, $sort, $filter);
-        $this->view->page        = (null !== $page) ? (int)$page : 1;
-        $this->view->sort        = $sort;
-        $this->view->filter      = (is_array($filter) && isset($filter[0])) ? $filter[0] : null;
-        $this->view->limit       = $limit;
-        $this->view->searched    = null;
-        $this->view->searchedBy  = null;
+        $this->view->resultCount  = $userModel->getCount($filter);
+        $this->view->results      = $userModel->getAll($page, $limit, $sort, $filter);
+        $this->view->page         = (null !== $page) ? (int)$page : 1;
+        $this->view->sort         = $sort;
+        $this->view->filter       = (is_array($filter) && isset($filter[0])) ? $filter[0] : null;
+        $this->view->limit        = $limit;
+        $this->view->searched     = null;
+        $this->view->searchedBy   = null;
+        $this->view->searchFields = $userModel->getSearchFields();
 
         if (!empty($filter)) {
             $filterValues = $userModel->getFilter($filter);

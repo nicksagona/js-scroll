@@ -35,12 +35,14 @@ var jsScroll = {
             if ((data.results != undefined) && (data.results.length > 0)) {
                 var nextRows = '';
                 var start    = $('#results > tbody > tr').length + 1;
+                var keys     = Object.keys(data.results[0]);
+
                 for (var i = 0; i < data.results.length; i++) {
-                    nextRows = nextRows + '<tr><td>' + (start + i) + '</td><td>' + data.results[i].id + '</td><td>' +
-                        ((!jsScroll.isEmpty(data.results[i].username)) ? data.results[i].username : '') + '</td><td>' +
-                        ((!jsScroll.isEmpty(data.results[i].first_name)) ? data.results[i].first_name : '') + '</td><td>' +
-                        ((!jsScroll.isEmpty(data.results[i].last_name)) ? data.results[i].last_name : '') + '</td><td>' +
-                        ((!jsScroll.isEmpty(data.results[i].email)) ? data.results[i].email : '') + '</td></tr>';
+                    nextRows = nextRows + '<tr><td>' + (start + i) + '</td>';
+                    for (var j = 0; j < keys.length; j++) {
+                        nextRows = nextRows + '<td>' + ((!jsScroll.isEmpty(data.results[i][keys[j]])) ? data.results[i][keys[j]] : '') + '</td>';
+                    }
+                    nextRows = nextRows + '</tr>';
                 }
 
                 $('#results > tbody').append(nextRows);
@@ -63,30 +65,33 @@ var jsScroll = {
             $.getJSON(url + '?limit=' + $('#results').attr('data-limit') + '&filter[]=' + $('#search_by').val() + '%20LIKE%20' + $('#search_for').val() + '%25', function (data) {
                 if ((data.results != undefined) && (data.results.length > 0)) {
                     $('#results > tbody').remove();
+
                     var tbody = '<tbody>';
                     var start = 1;
-                    for (var i = 0; i < data.results.length; i++) {
-                        tbody = tbody + '<tr><td>' + (start + i) + '</td><td>' + data.results[i].id + '</td><td>' +
-                            ((!jsScroll.isEmpty(data.results[i].username)) ? data.results[i].username : '') + '</td><td>' +
-                            ((!jsScroll.isEmpty(data.results[i].first_name)) ? data.results[i].first_name : '') + '</td><td>' +
-                            ((!jsScroll.isEmpty(data.results[i].last_name)) ? data.results[i].last_name : '') + '</td><td>' +
-                            ((!jsScroll.isEmpty(data.results[i].email)) ? data.results[i].email : '') + '</td></tr>';
-                    }
-                    tbody = tbody + '</tbody>';
+                    var keys  = Object.keys(data.results[0]);
 
+                    for (var i = 0; i < data.results.length; i++) {
+                        tbody = tbody + '<tr><td>' + (start + i) + '</td>';
+                        for (var j = 0; j < keys.length; j++) {
+                            tbody = tbody + '<td>' + ((!jsScroll.isEmpty(data.results[i][keys[j]])) ? data.results[i][keys[j]] : '') + '</td>';
+                        }
+                        tbody = tbody + '</tr>';
+                    }
+
+                    tbody = tbody + '</tbody>';
 
                     $('#results').append(tbody);
 
                     var thLinks = $('#results > thead > tr > th > a');
                     var filter  = $('#search_by').val() + '%20LIKE%20' + $('#search_for').val() + '%25';
 
-                    for (var j = 0; j < thLinks.length; j++) {
-                        var href = $(thLinks[j]).attr('href')
+                    for (var k = 0; k < thLinks.length; k++) {
+                        var href = $(thLinks[k]).attr('href')
                         if (href.indexOf('&filter') != -1) {
                             href = href.substring(0, href.indexOf('&filter'));
                         }
                         href = href + '&filter[]=' + filter;
-                        $(thLinks[j]).attr('href', href);
+                        $(thLinks[k]).attr('href', href);
                     }
 
                     $('#results').attr('data-filter', filter);
