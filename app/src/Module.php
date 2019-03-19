@@ -42,6 +42,8 @@ class Module extends \Pop\Module\Module
             );
         }
 
+        $this->application->on('app.dispatch.pre', 'Scroll\Http\Event\Options::check', 2);
+
         return $this;
     }
 
@@ -53,11 +55,20 @@ class Module extends \Pop\Module\Module
      */
     public function httpError(\Exception $exception)
     {
-        $response      = new Response();
-        $view          = new View(__DIR__ . '/../view/exception.phtml');
-        $view->title   = 'Exception';
-        $view->message = $exception->getMessage();
-        $response->setBody($view->render());
+        $request  = new Request();
+        $response = new Response();
+        $message  = $exception->getMessage();
+
+        if (stripos($request->getHeader('Accept'), 'text/html') !== false) {
+            $view          = new View(__DIR__ . '/../view/exception.phtml');
+            $view->title   = 'Exception';
+            $view->message = $message;
+            $response->setBody($view->render());
+        } else {
+            $response->setHeader('Content-Type', 'application/json');
+            $response->setBody(json_encode(['error' => $message], JSON_PRETTY_PRINT) . PHP_EOL);
+        }
+
         $response->send(500);
         exit();
     }

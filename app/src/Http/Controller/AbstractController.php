@@ -137,9 +137,25 @@ abstract class AbstractController extends \Pop\Controller\AbstractController
             $this->response->setMessage($message);
         }
 
+        $responseBody = (!empty($body) && ($this->response->getHeader('Content-Type') == 'application/json')) ?
+            json_encode($body, JSON_PRETTY_PRINT) : $body;
+
         $this->response->setCode($code);
-        $this->response->setBody($body . PHP_EOL . PHP_EOL);
+        $this->response->setBody($responseBody . PHP_EOL . PHP_EOL);
         $this->response->send(null, $headers);
+    }
+
+    /**
+     * Send OPTIONS response
+     *
+     * @param  int    $code
+     * @param  string $message
+     * @param  array  $headers
+     * @return void
+     */
+    public function sendOptions($code = 200, $message = null, array $headers = null)
+    {
+        $this->send($code, '', $message, $headers);
     }
 
     /**
