@@ -121,7 +121,7 @@ $(document).ready(function(){
         }
     });
 
-    // On search text field key up
+    // On search field key up or change
     $('#search_for').keyup(jsScroll.fetchSearch);
     $('#search_by').change(jsScroll.fetchSearch);
 });
