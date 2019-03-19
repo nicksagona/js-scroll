@@ -1,3 +1,40 @@
+<?php include 'inc/functions.php'; ?>
 <?php include 'inc/header.phtml'; ?>
-    <h1><?=$title;?></h1>
+    <a class="btn btn-sm btn-outline-info pull-right" href="/">Reset</a>
+    <select class="form-control form-control-inline form-control-sm pull-right" name="search_by" id="search_by">
+        <option value="username"<?=($searchedBy == 'username') ? ' selected="selected"' : null; ?>>Username</option>
+        <option value="first_name"<?=($searchedBy == 'first_name') ? ' selected="selected"' : null; ?>>First Name</option>
+        <option value="last_name"<?=($searchedBy == 'last_name') ? ' selected="selected"' : null; ?>>Last Name</option>
+        <option value="email"<?=($searchedBy == 'email') ? ' selected="selected"' : null; ?>>Email</option>
+    </select>
+    <input class="form-control form-control-inline form-control-sm pull-right" id="username" type="text" value="<?=$searched; ?>" placeholder="Search..." size="20" />
+    <h1><?=$title;?> (<span id="user-count" data-pagination="<?=$pagination; ?>"><?=$userCount; ?></span>)</h1>
+    <table id="users" class="table table-bordered" cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <th><a href="/?limit=<?=$pagination; ?>&sort=<?=getSort('id') . getQuery(['sort', 'limit']); ?>">#</a></th>
+                <th><a href="/?limit=<?=$pagination; ?>&sort=<?=getSort('username') . getQuery(['sort', 'limit']); ?>">Username</a></th>
+                <th><a href="/?limit=<?=$pagination; ?>&sort=<?=getSort('first_name') . getQuery(['sort', 'limit']); ?>">First Name</a></th>
+                <th><a href="/?limit=<?=$pagination; ?>&sort=<?=getSort('last_name') . getQuery(['sort', 'limit']); ?>">Last Name</a></th>
+                <th><a href="/?limit=<?=$pagination; ?>&sort=<?=getSort('email') . getQuery(['sort', 'limit']); ?>">Email</a></th>
+            </tr>
+        </thead>
+        <tbody>
+<?php if (count($users) == 0): ?>
+            <tr>
+                <td colspan="5"><p>There are current no users.</p></td>
+            </tr>
+<?php else: ?>
+<?php foreach ($users as $i => $user): ?>
+            <tr>
+                <td><?=$user['id']; ?></td>
+                <td><?=$user['username']; ?></td>
+                <td><?=$user['first_name']; ?></td>
+                <td><?=$user['last_name']; ?></td>
+                <td><?=$user['email']; ?></td>
+            </tr>
+<?php endforeach; ?>
+<?php endif; ?>
+        </tbody>
+    </table>
 <?php include 'inc/footer.phtml'; ?>

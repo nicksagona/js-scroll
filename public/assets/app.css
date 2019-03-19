@@ -9758,6 +9758,13 @@ h1, h2, h3, h4, h5, h6, div, p {
   color: #808080;
   font-family: 'Source Sans Pro', arial, helvetica, verdana, sans-serif; }
 
+table th {
+  background-color: #dee2e6; }
+
 .error {
   color: #f00;
   font-weight: bold; }
+
+.form-control-inline {
+  display: inline;
+  width: auto; }

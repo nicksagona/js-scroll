@@ -15,7 +15,25 @@ class IndexController extends AbstractController
     public function index()
     {
         $this->prepareView('index.phtml');
-        $this->view->title = 'Home';
+        $this->view->title = 'Users';
+
+        $page      = (null !== $this->request->getQuery('page')) ? (int)$this->request->getQuery('page') : null;
+        $limit     = (null !== $this->request->getQuery('limit'))  ? (int)$this->request->getQuery('limit') : $this->application->config['pagination'];
+        $sort      = (null !== $this->request->getQuery('sort'))  ? $this->request->getQuery('sort') : null;
+        $filter    = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
+        $userModel = new Model\User();
+
+        $this->view->userCount  = $userModel->getCount($filter);
+        $this->view->users      = $userModel->getAll($page, $limit, $sort, $filter);
+        $this->view->pagination = $this->application->config['pagination'];
+        $this->view->searched   = null;
+        $this->view->searchedBy = null;
+
+        if (!empty($filter)) {
+            $filterValues = $userModel->getFilter($filter);
+            $this->view->searched   = array_values($filterValues)[0];
+            $this->view->searchedBy = str_replace('%', '', array_keys($filterValues)[0]);
+        }
 
         $this->send();
     }

@@ -35,8 +35,7 @@ class User extends AbstractModel
         $select = ['id', 'username', 'first_name', 'last_name', 'email'];
 
         if (!empty($filter)) {
-            $columns = Predicate::convertToArray($filter);
-            return Table\Users::findBy($columns, [
+            return Table\Users::findBy($this->getFilter($filter), [
                 'select' => $select,
                 'offset' => $page,
                 'limit'  => $limit,
@@ -61,11 +60,21 @@ class User extends AbstractModel
     public function getCount($filter = null)
     {
         if (!empty($filter)) {
-            $columns = Predicate::convertToArray($filter);
-            return Table\Users::getTotal($columns);
+            return Table\Users::getTotal($this->getFilter($filter));
         } else {
             return Table\Users::getTotal();
         }
+    }
+
+    /**
+     * Get filter
+     *
+     * @param  mixed $filter
+     * @return array
+     */
+    public function getFilter($filter)
+    {
+        return Predicate::convertToArray($filter);
     }
 
 }
