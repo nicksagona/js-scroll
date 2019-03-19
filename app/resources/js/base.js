@@ -6,7 +6,8 @@ var jsScroll = {
     bottom : false,
 
     isEmpty : function(value) {
-        return ((value == undefined) || (value == null) || (value == '') || (value == 'undefined') || (value == 'null'));
+        return ((value == undefined) || (value == null) || (value == '') ||
+            (value == 'undefined') || (value == 'null'));
     },
 
     fetchNextPage : function(){
@@ -40,7 +41,8 @@ var jsScroll = {
                 for (var i = 0; i < data.results.length; i++) {
                     nextRows = nextRows + '<tr><td>' + (start + i) + '</td>';
                     for (var j = 0; j < keys.length; j++) {
-                        nextRows = nextRows + '<td>' + ((!jsScroll.isEmpty(data.results[i][keys[j]])) ? data.results[i][keys[j]] : '') + '</td>';
+                        nextRows = nextRows + '<td>' + ((!jsScroll.isEmpty(data.results[i][keys[j]])) ?
+                            data.results[i][keys[j]] : '') + '</td>';
                     }
                     nextRows = nextRows + '</tr>';
                 }
@@ -53,16 +55,18 @@ var jsScroll = {
 
     fetchSearch : function() {
         if (($('#search_for').val() != '') && ($('#search_for').val() != undefined) && ($('#search_for').val() != null)) {
-            var url      = $('#results').attr('data-url');
-            var urlCount = $('#results').attr('data-url-count');
+            var url      = $('#results').attr('data-url') + '?limit=' + $('#results').attr('data-limit') +
+                '&filter[]=' + $('#search_by').val() + '%20LIKE%20' + $('#search_for').val() + '%25';
+            var urlCount = $('#results').attr('data-url-count') + '?filter[]=' + $('#search_by').val() +
+                '%20LIKE%20' + $('#search_for').val() + '%25';
 
-            $.getJSON(urlCount + '?filter[]=' + $('#search_by').val() + '%20LIKE%20' + $('#search_for').val() + '%25', function (data) {
+            $.getJSON(urlCount, function (data) {
                 if (data.result_count != undefined) {
                     $('#result-count')[0].innerHTML = data.result_count;
                 }
             });
 
-            $.getJSON(url + '?limit=' + $('#results').attr('data-limit') + '&filter[]=' + $('#search_by').val() + '%20LIKE%20' + $('#search_for').val() + '%25', function (data) {
+            $.getJSON(url, function (data) {
                 if ((data.results != undefined) && (data.results.length > 0)) {
                     $('#results > tbody').remove();
 
@@ -73,7 +77,8 @@ var jsScroll = {
                     for (var i = 0; i < data.results.length; i++) {
                         tbody = tbody + '<tr><td>' + (start + i) + '</td>';
                         for (var j = 0; j < keys.length; j++) {
-                            tbody = tbody + '<td>' + ((!jsScroll.isEmpty(data.results[i][keys[j]])) ? data.results[i][keys[j]] : '') + '</td>';
+                            tbody = tbody + '<td>' + ((!jsScroll.isEmpty(data.results[i][keys[j]])) ?
+                                data.results[i][keys[j]] : '') + '</td>';
                         }
                         tbody = tbody + '</tr>';
                     }

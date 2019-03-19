@@ -18,8 +18,9 @@ class IndexController extends AbstractController
         $this->view->title = 'Users';
 
         $page      = (null !== $this->request->getQuery('page')) ? (int)$this->request->getQuery('page') : null;
-        $limit     = (null !== $this->request->getQuery('limit'))  ? (int)$this->request->getQuery('limit') : $this->application->config['pagination'];
-        $sort      = (null !== $this->request->getQuery('sort'))  ? $this->request->getQuery('sort') : null;
+        $limit     = (null !== $this->request->getQuery('limit')) ?
+            (int)$this->request->getQuery('limit') : $this->application->config['pagination'];
+        $sort      = (null !== $this->request->getQuery('sort')) ? $this->request->getQuery('sort') : null;
         $filter    = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
         $userModel = new Model\User();
 
@@ -50,8 +51,9 @@ class IndexController extends AbstractController
     public function users()
     {
         $page    = (null !== $this->request->getQuery('page')) ? (int)$this->request->getQuery('page') : null;
-        $limit   = (null !== $this->request->getQuery('limit'))  ? (int)$this->request->getQuery('limit') : $this->application->config['pagination'];
-        $sort    = (null !== $this->request->getQuery('sort'))  ? $this->request->getQuery('sort') : null;
+        $limit   = (null !== $this->request->getQuery('limit')) ?
+            (int)$this->request->getQuery('limit') : $this->application->config['pagination'];
+        $sort    = (null !== $this->request->getQuery('sort')) ? $this->request->getQuery('sort') : null;
         $filter  = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
         $users   = (new Model\User())->getAll($page, $limit, $sort, $filter);
         $this->send(200, ['results' => $users], 'OK', $this->application->config['http_options_headers']);
@@ -66,7 +68,9 @@ class IndexController extends AbstractController
     {
         $user   = new Model\User();
         $filter = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
-        $this->send(200, ['result_count' => $user->getCount($filter)], 'OK', $this->application->config['http_options_headers']);
+        $this->send(
+            200, ['result_count' => $user->getCount($filter)], 'OK', $this->application->config['http_options_headers']
+        );
     }
 
     /**

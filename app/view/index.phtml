@@ -10,7 +10,13 @@
     </select>
     <input class="form-control form-control-inline form-control-sm pull-right" id="search_for" name="search_for" type="text" value="<?=$searched; ?>" placeholder="Search..." size="20" />
     <h1><?=$title;?> (<span id="result-count"><?=$resultCount; ?></span>)</h1>
-    <table id="results" class="table table-bordered" cellpadding="0" cellspacing="0" data-url="/users" data-url-count="/users/count" data-page="<?=(int)$page; ?>" data-limit="<?=(int)$limit; ?>" data-sort="<?=$sort; ?>" data-filter="<?=$filter; ?>">
+    <table id="results" class="table table-bordered" cellpadding="0" cellspacing="0"
+           data-url="/users"
+           data-url-count="/users/count"
+           data-page="<?=(int)$page; ?>"
+           data-limit="<?=(int)$limit; ?>"
+           data-sort="<?=$sort; ?>"
+           data-filter="<?=$filter; ?>">
         <thead>
             <tr>
                 <th>#</th>
