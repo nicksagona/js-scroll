@@ -11,11 +11,12 @@ var jsScroll = {
     },
 
     fetchNextPage : function(){
-        var url    = $('#results').attr('data-url');
-        var page   = $('#results').attr('data-page');
-        var limit  = $('#results').attr('data-limit');
-        var sort   = $('#results').attr('data-sort');
-        var filter = $('#results').attr('data-filter');
+        var url      = $('#results').attr('data-url');
+        var page     = $('#results').attr('data-page');
+        var limit    = $('#results').attr('data-limit');
+        var sort     = $('#results').attr('data-sort');
+        var filter   = $('#results').attr('data-filter');
+        var numbered = $('#results').attr('data-numbered');
 
         jsScroll.bottom = false;
 
@@ -39,7 +40,10 @@ var jsScroll = {
                 var keys     = Object.keys(data.results[0]);
 
                 for (var i = 0; i < data.results.length; i++) {
-                    nextRows = nextRows + '<tr><td>' + (start + i) + '</td>';
+                    nextRows = nextRows + '<tr>';
+                    if (numbered == 1) {
+                        nextRows = nextRows + '<td>' + (start + i) + '</td>';
+                    }
                     for (var j = 0; j < keys.length; j++) {
                         nextRows = nextRows + '<td>' + ((!jsScroll.isEmpty(data.results[i][keys[j]])) ?
                             data.results[i][keys[j]] : '') + '</td>';
@@ -55,27 +59,25 @@ var jsScroll = {
 
     fetchSearch : function() {
         if (($('#search_for').val() != '') && ($('#search_for').val() != undefined) && ($('#search_for').val() != null)) {
-            var url      = $('#results').attr('data-url') + '?limit=' + $('#results').attr('data-limit') +
+            var url = $('#results').attr('data-url') + '?limit=' + $('#results').attr('data-limit') +
                 '&filter[]=' + $('#search_by').val() + '%20LIKE%20' + $('#search_for').val() + '%25';
-            var urlCount = $('#results').attr('data-url-count') + '?filter[]=' + $('#search_by').val() +
-                '%20LIKE%20' + $('#search_for').val() + '%25';
 
-            $.getJSON(urlCount, function (data) {
+            $.getJSON(url, function (data) {
+                $('#results > tbody').remove();
                 if (data.result_count != undefined) {
                     $('#result-count')[0].innerHTML = data.result_count;
                 }
-            });
-
-            $.getJSON(url, function (data) {
                 if ((data.results != undefined) && (data.results.length > 0)) {
-                    $('#results > tbody').remove();
-
-                    var tbody = '<tbody>';
-                    var start = 1;
-                    var keys  = Object.keys(data.results[0]);
+                    var tbody    = '<tbody>';
+                    var start    = 1;
+                    var keys     = Object.keys(data.results[0]);
+                    var numbered = $('#results').attr('data-numbered');
 
                     for (var i = 0; i < data.results.length; i++) {
-                        tbody = tbody + '<tr><td>' + (start + i) + '</td>';
+                        tbody = tbody + '<tr>';
+                        if (numbered == 1) {
+                            tbody = tbody + '<td>' + (start + i) + '</td>';
+                        }
                         for (var j = 0; j < keys.length; j++) {
                             tbody = tbody + '<td>' + ((!jsScroll.isEmpty(data.results[i][keys[j]])) ?
                                 data.results[i][keys[j]] : '') + '</td>';
@@ -101,6 +103,11 @@ var jsScroll = {
 
                     $('#results').attr('data-filter', filter);
                     $('#results').attr('data-page', 1);
+                } else {
+                    $('#results').append(
+                        '<tbody><tr><td colspan="' + $('#results > thead > tr > th').length + '"><p class="no-results">' +
+                        $('#results').attr('data-no-results') + '</p></td></tr></tbody>'
+                    );
                 }
             });
         }

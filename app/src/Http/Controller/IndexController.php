@@ -33,6 +33,8 @@ class IndexController extends AbstractController
         $this->view->searched     = null;
         $this->view->searchedBy   = null;
         $this->view->searchFields = $userModel->getSearchFields();
+        $this->view->numbered     = (int)$this->application->config['numbered'];
+        $this->view->noResults    = $this->application->config['no_results'];
 
         if (!empty($filter)) {
             $filterValues = $userModel->getFilter($filter);
@@ -50,13 +52,19 @@ class IndexController extends AbstractController
      */
     public function users()
     {
+        $user    = new Model\User();
         $page    = (null !== $this->request->getQuery('page')) ? (int)$this->request->getQuery('page') : null;
         $limit   = (null !== $this->request->getQuery('limit')) ?
             (int)$this->request->getQuery('limit') : $this->application->config['pagination'];
         $sort    = (null !== $this->request->getQuery('sort')) ? $this->request->getQuery('sort') : null;
         $filter  = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
-        $users   = (new Model\User())->getAll($page, $limit, $sort, $filter);
-        $this->send(200, ['results' => $users], 'OK', $this->application->config['http_options_headers']);
+
+        $results = [
+            'results'      => $user->getAll($page, $limit, $sort, $filter),
+            'result_count' => $user->getCount($filter)
+        ];
+
+        $this->send(200, $results, 'OK', $this->application->config['http_options_headers']);
     }
 
     /**
