@@ -59,8 +59,20 @@ var jsScroll = {
 
     fetchSearch : function() {
         if (($('#search_for').val() != '') && ($('#search_for').val() != undefined) && ($('#search_for').val() != null)) {
+            var filterFields      = jsScroll.getQuery('filter_fields');
+            var filterFieldsQuery = '';
+            if (filterFields != undefined) {
+                for (var i = 0; i < filterFields.length; i++) {
+                    filterFieldsQuery = filterFieldsQuery + ((filterFieldsQuery != '') ? '&' : '') + 'filter_fields[]=' + filterFields[i];
+                }
+            }
+
             var url = $('#results').attr('data-url') + '?limit=' + $('#results').attr('data-limit') +
-                '&filter[]=' + $('#search_by').val() + '%20LIKE%20' + $('#search_for').val() + '%25';
+                '&filter[]=' + $('#search_by').val() + '%20LIKE%20' + $('#search_for').val() + '%25' + '&' + filterFieldsQuery;
+            var exportUrl = $('#results').attr('data-url-export') + '?filter[]=' + $('#search_by').val() +
+                '%20LIKE%20' + $('#search_for').val() + '%25' + '&' + filterFieldsQuery;
+
+            $('#export-btn').attr('href', exportUrl);
 
             $.getJSON(url, function (data) {
                 $('#results > tbody').remove();
@@ -98,6 +110,9 @@ var jsScroll = {
                             href = href.substring(0, href.indexOf('&filter'));
                         }
                         href = href + '&filter[]=' + filter;
+                        if (filterFieldsQuery != '') {
+                            href = href + '&' + filterFieldsQuery;
+                        }
                         $(thLinks[k]).attr('href', href);
                     }
 
@@ -110,6 +125,44 @@ var jsScroll = {
                     );
                 }
             });
+        }
+    },
+
+    getQuery : function(key, u) {
+        var vars = [];
+        var url  = (u != null) ? u : location.href;
+
+        if (url.indexOf('?') != -1) {
+            var varString = url.substring(url.indexOf('?') + 1);
+            if (varString.indexOf('#') != -1) {
+                varString = varString.substring(0, varString.indexOf('#'));
+            }
+
+            var varsAry = varString.split('&');
+            for (var i = 0; i < varsAry.length; i++) {
+                var gV    = varsAry[i].split('=');
+                var key   = decodeURIComponent(gV[0]);
+                var value = decodeURIComponent(gV[1])
+
+                if (key.indexOf('[') != -1) {
+                    key = key.substring(0, key.indexOf('['));
+                    if (vars[key] == undefined) {
+                        vars[key] = [];
+                    }
+                }
+
+                if ((vars[key] != undefined) && (vars[key].constructor == Array)) {
+                    vars[key].push(value);
+                } else {
+                    vars[key] = value;
+                }
+            }
+        }
+
+        if ((key != undefined) && (key != null)) {
+            return (vars[key] != undefined) ? vars[key] : undefined;
+        } else {
+            return vars;
         }
     }
 };

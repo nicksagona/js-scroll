@@ -52,3 +52,22 @@ table th {
   background-position: center;
   background-repeat: no-repeat;
 }
+
+#results {
+  clear: both;
+  margin-top: 15px;
+}
+
+#results > thead > tr > th:first-child {
+  width: 5%;
+}
+
+#filter_fields {
+  margin: 0 0 15px 0;
+  float: left;
+}
+
+.filter-btn {
+  margin: 7px 0 0 7px;
+  float: left;
+}

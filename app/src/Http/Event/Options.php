@@ -6,6 +6,12 @@ use Pop\Application;
 class Options
 {
 
+    /**
+     * Method to send options
+     *
+     * @param  Application $application
+     * @return void
+     */
     public static function check(Application $application)
     {
         if (($application->router()->hasController()) &&

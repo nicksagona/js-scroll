@@ -7,6 +7,10 @@ return [
             'controller' => 'Scroll\Http\Controller\IndexController',
             'action'     => 'index'
         ],
+        '/export[/]'  => [
+            'controller' => 'Scroll\Http\Controller\IndexController',
+            'action'     => 'export'
+        ],
         '/users[/]' => [
             'controller' => 'Scroll\Http\Controller\IndexController',
             'action'     => 'users'
