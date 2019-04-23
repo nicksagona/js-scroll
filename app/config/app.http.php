@@ -7,10 +7,6 @@ return [
             'controller' => 'Scroll\Http\Controller\IndexController',
             'action'     => 'index'
         ],
-        '/export[/]'  => [
-            'controller' => 'Scroll\Http\Controller\IndexController',
-            'action'     => 'export'
-        ],
         '/users[/]' => [
             'controller' => 'Scroll\Http\Controller\IndexController',
             'action'     => 'users'
@@ -18,6 +14,10 @@ return [
         '/users/count[/]' => [
             'controller' => 'Scroll\Http\Controller\IndexController',
             'action'     => 'usersCount'
+        ],
+        '/export[/]'  => [
+            'controller' => 'Scroll\Http\Controller\IndexController',
+            'action'     => 'export'
         ],
         '*'    => [
             'controller' => 'Scroll\Http\Controller\IndexController',
