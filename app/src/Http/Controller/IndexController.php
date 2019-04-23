@@ -18,12 +18,12 @@ class IndexController extends AbstractController
         $this->prepareView('index.phtml');
         $this->view->title = 'Users';
 
-        $userModel    = new Model\User();
-        $filterFields = (null !== $this->request->getQuery('filter_fields')) ? $this->request->getQuery('filter_fields') : [];
-        $page         = (null !== $this->request->getQuery('page')) ? (int)$this->request->getQuery('page') : null;
-        $sort         = (null !== $this->request->getQuery('sort')) ? $this->request->getQuery('sort') : null;
-        $filter       = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
-        $limit        = (null !== $this->request->getQuery('limit')) ?
+        $userModel = new Model\User();
+        $fields    = (null !== $this->request->getQuery('fields')) ? $this->request->getQuery('fields') : [];
+        $page      = (null !== $this->request->getQuery('page')) ? (int)$this->request->getQuery('page') : null;
+        $sort      = (null !== $this->request->getQuery('sort')) ? $this->request->getQuery('sort') : null;
+        $filter    = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
+        $limit     = (null !== $this->request->getQuery('limit')) ?
             (int)$this->request->getQuery('limit') : $this->application->config['pagination'];
 
         $this->view->resultCount     = $userModel->getCount($filter);
@@ -34,9 +34,9 @@ class IndexController extends AbstractController
         $this->view->limit           = $limit;
         $this->view->searched        = null;
         $this->view->searchedBy      = null;
-        $this->view->searchFields    = $userModel->getSearchFields($filterFields);
+        $this->view->searchFields    = $userModel->getSearchFields($fields);
         $this->view->allSearchFields = $userModel->getSearchFields();
-        $this->view->filterFields    = $filterFields;
+        $this->view->fields          = $fields;
         $this->view->numbered        = (int)$this->application->config['numbered'];
         $this->view->noResults       = $this->application->config['no_results'];
 
@@ -50,39 +50,23 @@ class IndexController extends AbstractController
     }
 
     /**
-     * Export action
-     *
-     * @return void
-     */
-    public function export()
-    {
-        $userModel    = new Model\User();
-        $filterFields = (null !== $this->request->getQuery('filter_fields')) ? $this->request->getQuery('filter_fields') : [];
-        $sort         = (null !== $this->request->getQuery('sort')) ? $this->request->getQuery('sort') : null;
-        $filter       = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
-        $results      = $userModel->getAll(null, null, $sort, $filter, $filterFields);
-
-        Csv::outputDataToHttp($results);
-    }
-
-    /**
      * Users action
      *
      * @return void
      */
     public function users()
     {
-        $user         = new Model\User();
-        $filterFields = (null !== $this->request->getQuery('filter_fields')) ? $this->request->getQuery('filter_fields') : [];
-        $page         = (null !== $this->request->getQuery('page')) ? (int)$this->request->getQuery('page') : null;
-        $sort         = (null !== $this->request->getQuery('sort')) ? $this->request->getQuery('sort') : null;
-        $filter       = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
-        $limit        = (null !== $this->request->getQuery('limit')) ?
+        $userModel = new Model\User();
+        $fields    = (null !== $this->request->getQuery('fields')) ? $this->request->getQuery('fields') : [];
+        $page      = (null !== $this->request->getQuery('page')) ? (int)$this->request->getQuery('page') : null;
+        $sort      = (null !== $this->request->getQuery('sort')) ? $this->request->getQuery('sort') : null;
+        $filter    = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
+        $limit     = (null !== $this->request->getQuery('limit')) ?
             (int)$this->request->getQuery('limit') : $this->application->config['pagination'];
 
         $results = [
-            'results'      => $user->getAll($page, $limit, $sort, $filter, $filterFields),
-            'result_count' => $user->getCount($filter)
+            'results'      => $userModel->getAll($page, $limit, $sort, $filter, $fields),
+            'result_count' => $userModel->getCount($filter)
         ];
 
         $this->send(200, $results, 'OK', $this->application->config['http_options_headers']);
@@ -95,11 +79,27 @@ class IndexController extends AbstractController
      */
     public function usersCount()
     {
-        $user   = new Model\User();
-        $filter = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
+        $userModel = new Model\User();
+        $filter    = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
         $this->send(
-            200, ['result_count' => $user->getCount($filter)], 'OK', $this->application->config['http_options_headers']
+            200, ['result_count' => $userModel->getCount($filter)], 'OK', $this->application->config['http_options_headers']
         );
+    }
+
+    /**
+     * Export action
+     *
+     * @return void
+     */
+    public function export()
+    {
+        $userModel = new Model\User();
+        $fields    = (null !== $this->request->getQuery('fields')) ? $this->request->getQuery('fields') : [];
+        $sort      = (null !== $this->request->getQuery('sort')) ? $this->request->getQuery('sort') : null;
+        $filter    = (null !== $this->request->getQuery('filter')) ? $this->request->getQuery('filter') : null;
+        $results   = $userModel->getAll(null, null, $sort, $filter, $fields);
+
+        Csv::outputDataToHttp($results);
     }
 
     /**

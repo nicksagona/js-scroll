@@ -22,10 +22,10 @@ class User extends AbstractModel
      * @param  int    $limit
      * @param  string $sort
      * @param  mixed  $filter
-     * @param  array  $filterFields
+     * @param  array  $fields
      * @return array
      */
-    public function getAll($page = null, $limit = null, $sort = null, $filter = null, array $filterFields = [])
+    public function getAll($page = null, $limit = null, $sort = null, $filter = null, array $fields = [])
     {
         if ((null !== $limit) && (null !== $page)) {
             $page = ((int)$page > 1) ? ($page * $limit) - $limit : null;
@@ -50,14 +50,14 @@ class User extends AbstractModel
 
         if (!empty($filter)) {
             return Table\Users::findBy($this->getFilter($filter), [
-                'select' => $this->getSearchFields($filterFields),
+                'select' => $this->getSearchFields($fields),
                 'offset' => $page,
                 'limit'  => $limit,
                 'order'  => $orderBy,
             ])->toArray();
         } else {
             return Table\Users::findAll([
-                'select' => $this->getSearchFields($filterFields),
+                'select' => $this->getSearchFields($fields),
                 'offset' => $page,
                 'limit'  => $limit,
                 'order'  => $orderBy
@@ -83,13 +83,13 @@ class User extends AbstractModel
     /**
      * Method to get search fields
      *
-     * @param  array $filterFields
+     * @param  array $fields
      * @return array
      */
-    public function getSearchFields(array $filterFields = [])
+    public function getSearchFields(array $fields = [])
     {
-        return (!empty($filterFields)) ?
-            array_diff($this->searchFields, array_diff($this->searchFields, $filterFields)) : $this->searchFields;
+        return (!empty($fields)) ?
+            array_diff($this->searchFields, array_diff($this->searchFields, $fields)) : $this->searchFields;
     }
 
     /**

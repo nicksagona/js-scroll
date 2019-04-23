@@ -14,15 +14,20 @@
 $exportQuery = getQuery(['sort', 'limit'], false);
 if (!empty($sort)):
     $exportQuery = '?sort=' . $sort . ((!empty($exportQuery)) ? '&' . $exportQuery : null);
+elseif (!empty($exportQuery)):
+    $exportQuery = '?' . $exportQuery;
 endif;
 ?>
-    <form action="/" method="get">
-        <select class="form-control form-control-inline form-control-sm " name="filter_fields[]" id="filter_fields" multiple="multiple" size="2">
+    <form id="filter-form" action="/" method="get">
+        <select class="form-control form-control-inline form-control-sm " name="fields[]" id="fields" multiple="multiple" size="2">
 <?php foreach ($allSearchFields as $searchField): ?>
-            <option value="<?=$searchField;?>"<?=(in_array($searchField, $filterFields)) ? ' selected="selected"' : ''; ?>><?=convertCase($searchField); ?></option>
+            <option value="<?=$searchField;?>"<?=(in_array($searchField, $fields)) ? ' selected="selected"' : ''; ?>><?=convertCase($searchField); ?></option>
 <?php endforeach; ?>
         </select>
         <button class="btn btn-sm btn-outline-primary filter-btn">Filter</button>
+<?php if (!empty($filter)): ?>
+        <input type="hidden" id="filter" name="filter[]" value="<?=$filter; ?>" />
+<?php endif; ?>
     </form>
     <a href="/export<?=$exportQuery; ?>" id="export-btn" class="btn btn-sm btn-outline-primary filter-btn">Export</a>
     <a href="/" class="btn btn-sm btn-outline-primary filter-btn">Reset</a>
@@ -33,6 +38,7 @@ endif;
            data-limit="<?=(int)$limit; ?>"
            data-sort="<?=$sort; ?>"
            data-filter="<?=$filter; ?>"
+           data-fields="<?=implode(',', $fields); ?>"
            data-numbered="<?=$numbered; ?>"
            data-no-results="<?=$noResults; ?>">
         <thead>

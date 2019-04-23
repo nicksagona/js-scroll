@@ -16,11 +16,11 @@ var jsScroll = {
         var limit    = $('#results').attr('data-limit');
         var sort     = $('#results').attr('data-sort');
         var filter   = $('#results').attr('data-filter');
+        var fields   = $('#results').attr('data-fields');
         var numbered = $('#results').attr('data-numbered');
 
         jsScroll.bottom = false;
-
-        page = parseInt(page) + 1;
+        page            = parseInt(page) + 1;
 
         $('#results').attr('data-page', page);
 
@@ -31,6 +31,12 @@ var jsScroll = {
         }
         if ((filter != null) && (filter != undefined) && (filter != '')) {
             url = url + '&filter[]=' + filter;
+        }
+        if ((fields != null) && (fields != undefined) && (fields != '')) {
+            var fieldsAry = (fields.indexOf(',') != -1) ? fields.split(',') : [fields];
+            for (var i = 0; i < fieldsAry.length; i++) {
+                url = url + '&fields[]=' + fieldsAry[i];
+            }
         }
 
         $.getJSON(url, function (data) {
@@ -59,18 +65,26 @@ var jsScroll = {
 
     fetchSearch : function() {
         if (($('#search_for').val() != '') && ($('#search_for').val() != undefined) && ($('#search_for').val() != null)) {
-            var filterFields      = jsScroll.getQuery('filter_fields');
-            var filterFieldsQuery = '';
-            if (filterFields != undefined) {
-                for (var i = 0; i < filterFields.length; i++) {
-                    filterFieldsQuery = filterFieldsQuery + ((filterFieldsQuery != '') ? '&' : '') + 'filter_fields[]=' + filterFields[i];
+            var fields      = jsScroll.getQuery('fields');
+            var fieldsQuery = '';
+
+            if (fields != undefined) {
+                for (var i = 0; i < fields.length; i++) {
+                    fieldsQuery = fieldsQuery + ((fieldsQuery != '') ? '&' : '') + 'fields[]=' + fields[i];
                 }
             }
 
             var url = $('#results').attr('data-url') + '?limit=' + $('#results').attr('data-limit') +
-                '&filter[]=' + $('#search_by').val() + '%20LIKE%20' + $('#search_for').val() + '%25' + '&' + filterFieldsQuery;
+                '&filter[]=' + $('#search_by').val() + '%20LIKE%20' + $('#search_for').val() + '%25' + '&' + fieldsQuery;
             var exportUrl = $('#results').attr('data-url-export') + '?filter[]=' + $('#search_by').val() +
-                '%20LIKE%20' + $('#search_for').val() + '%25' + '&' + filterFieldsQuery;
+                '%20LIKE%20' + $('#search_for').val() + '%25' + '&' + fieldsQuery;
+
+            if ($('#filter')[0] == undefined) {
+                $('#filter-form').append('<input type="hidden" id="filter" name="filter[]" value="' +
+                    $('#search_by').val() + ' LIKE ' + $('#search_for').val() + '%" />');
+            } else {
+                $('#filter').prop('value', $('#search_by').val() + ' LIKE ' + $('#search_for').val() + '%');
+            }
 
             $('#export-btn').attr('href', exportUrl);
 
@@ -110,13 +124,14 @@ var jsScroll = {
                             href = href.substring(0, href.indexOf('&filter'));
                         }
                         href = href + '&filter[]=' + filter;
-                        if (filterFieldsQuery != '') {
-                            href = href + '&' + filterFieldsQuery;
+                        if ((fieldsQuery != '') && (href.indexOf('&fields') == -1)) {
+                            href = href + '&' + fieldsQuery;
                         }
                         $(thLinks[k]).attr('href', href);
                     }
 
                     $('#results').attr('data-filter', filter);
+                    $('#results').attr('data-fields', fields.join(','));
                     $('#results').attr('data-page', 1);
                 } else {
                     $('#results').append(
@@ -140,21 +155,21 @@ var jsScroll = {
 
             var varsAry = varString.split('&');
             for (var i = 0; i < varsAry.length; i++) {
-                var gV    = varsAry[i].split('=');
-                var key   = decodeURIComponent(gV[0]);
-                var value = decodeURIComponent(gV[1])
+                var gV = varsAry[i].split('=');
+                var k  = decodeURIComponent(gV[0]);
+                var v  = decodeURIComponent(gV[1])
 
-                if (key.indexOf('[') != -1) {
-                    key = key.substring(0, key.indexOf('['));
-                    if (vars[key] == undefined) {
-                        vars[key] = [];
+                if (k.indexOf('[') != -1) {
+                    k = k.substring(0, k.indexOf('['));
+                    if (vars[k] == undefined) {
+                        vars[k] = [];
                     }
                 }
 
-                if ((vars[key] != undefined) && (vars[key].constructor == Array)) {
-                    vars[key].push(value);
+                if ((vars[k] != undefined) && (vars[k].constructor == Array)) {
+                    vars[k].push(v);
                 } else {
-                    vars[key] = value;
+                    vars[k] = v;
                 }
             }
         }
